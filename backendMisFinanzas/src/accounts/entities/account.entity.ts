@@ -8,18 +8,8 @@ export class Account {
     name: string;
 
     @BeforeInsert()
-    checkAccountInsert() {
-        if (!this.name) {
-            this.name = this.name;
-        }
-        this.name = this.name
-            .toLowerCase()
-            .replaceAll(' ', '_')
-            .replaceAll("'", '');
-    }
-
     @BeforeUpdate()
-    checkAccountUpdate() {
+    checkAccount() {
         this.name = this.name
             .toLowerCase()
             .replaceAll(' ', '_')
