@@ -7,8 +7,8 @@ import { Subcategory } from './entities/subcategory.entity';
 @Module({
   controllers: [SubcategoriesController],
   providers: [SubcategoriesService],
-  imports: [ 
+  imports: [
     TypeOrmModule.forFeature([Subcategory])
-  ],
+  ]
 })
 export class SubcategoriesModule {}

@@ -1,19 +1,14 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: 'categories' })
+@Entity({name:'categories'})
 export class Category {
 
-        @PrimaryGeneratedColumn()
-        id: number;
-        @Column('text')
-        name: string;
-    
-        @BeforeInsert()
-        @BeforeUpdate()
-        checkAccount() {
-            this.name = this.name
-                .toLowerCase()
-                .replaceAll(' ', '_')
-                .replaceAll("'", '');
-        }
-}
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column('text')
+    name: string;
+
+    @Column('text')
+    color: string;
+ }

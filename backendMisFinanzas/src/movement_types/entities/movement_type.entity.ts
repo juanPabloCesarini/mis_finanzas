@@ -5,8 +5,12 @@ export class MovementType {
 
     @PrimaryGeneratedColumn()
     id: number;
+
     @Column('text')
     name: string;
+
+    @Column('text')
+    color: string;
 
 
     @BeforeInsert()
