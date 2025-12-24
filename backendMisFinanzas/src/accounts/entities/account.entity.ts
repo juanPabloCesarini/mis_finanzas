@@ -41,7 +41,7 @@ export class Account {
   checkAccount() {
     if (this.name) {
       this.name = this.name
-        .toLowerCase()
+        .toUpperCase()
         .replaceAll(' ', '_')
         .replaceAll("'", '');
     }

@@ -1,26 +1,69 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Account } from './entities/account.entity';
 
 @Injectable()
 export class AccountsService {
-  create(createAccountDto: CreateAccountDto) {
-    return 'This action adds a new account';
+  constructor(
+    @InjectRepository(Account)
+    private readonly accountRepository: Repository<Account>,
+  ) {}
+
+  async create(createAccountDto: CreateAccountDto) {
+     const account = this.accountRepository.create(createAccountDto);
+    
+    try {
+
+      return await this.accountRepository.save(account);
+    } catch (error) {
+      throw new BadRequestException("hubo un error")
+    }
+    
   }
 
-  findAll() {
-    return `This action returns all accounts`;
+  async findAll() {
+    const accounts = await this.accountRepository.find(
+      {
+        order: { name: 'ASC' },
+        withDeleted:true
+      }
+    )
+    return accounts;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} account`;
+  async findOne(id: number) {
+     try {
+       const account = await this.accountRepository.findOne({ where: { id } });
+       if (!account) throw new NotFoundException(`El ${id} no existe`);
+       return account;
+     } catch (error) {
+       throw new BadRequestException("hubo un error")
+     }
+    
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
+  async update(id: number, updateAccountDto: UpdateAccountDto) {
+    try {
+      const account = await this.accountRepository.preload({ id, ...updateAccountDto })
+      if (!account) throw new NotFoundException(`El ${id} no existe`);
+      return await this.accountRepository.save(account);
+    } catch (error) {
+      throw new BadRequestException('hubo un error');
+    }
+    
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} account`;
+  async remove(id: number) {
+    try {
+    const result = await this.accountRepository.softDelete(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`El account con id ${id} no existe`);
+    }
+    } catch (error) {
+      throw new BadRequestException('hubo un error');
+    }
   }
 }
