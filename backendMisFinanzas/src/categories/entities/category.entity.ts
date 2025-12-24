@@ -1,6 +1,8 @@
 import { Movement } from 'src/movements/entities/movement.entity';
 import { Subcategory } from 'src/subcategories/entities/subcategory.entity';
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -37,4 +39,15 @@ export class Category {
 
   @OneToMany(() => Movement, (movement) => movement.category)
   movement: Movement[];
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    checkAccount() {
+      if (this.name) {
+        this.name = this.name
+          .toUpperCase()
+          .replaceAll(' ', '_')
+          .replaceAll("'", '');
+      }
+    }
 }
